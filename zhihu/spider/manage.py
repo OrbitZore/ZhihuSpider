@@ -220,7 +220,7 @@ class CollectionManage(ItemManage):
     def __init__(self, collection_id):
         super(CollectionManage, self).__init__(collection_id)
         resp = self.get_network_data_package('collection_meta', self.item_id)
-        jsd = resp.json()
+        jsd = resp.json()["collection"]
         self.title = jsd.get('title')
         self.item_totals = jsd.get('item_count')
         config.warehouse('~collection/%s' % format_path(self.title))
@@ -228,7 +228,7 @@ class CollectionManage(ItemManage):
     def network_data_packages(self, size, func=None, **kwargs):
         if size > self.item_totals or size < 0:
             size = self.item_totals
-        page_totals = size // 10 + 1
+        offset_totals = size // 20 + 1
 
         if func is None or type(func).__name__ != 'function':
             def f(x, **kw):
@@ -236,11 +236,11 @@ class CollectionManage(ItemManage):
 
             func = f
 
-        page = 1
-        while page <= page_totals:
-            resp = self.get_network_data_package(self.item_name, self.item_id, page=page)
+        offset = 1
+        while offset <= offset_totals:
+            resp = self.get_network_data_package(self.item_name, self.item_id, offset=offset*20)
             resp.encoding = 'utf8'
-            page += 1
+            offset += 1
             yield func(resp.text)
 
     def handle_data(self, data):
@@ -249,9 +249,9 @@ class CollectionManage(ItemManage):
     def run(self):
         def init_data(htm):
             answers = re.findall(
-                r'<link itemprop="url" href="/question/\d+/answer/(\d+)">', htm)
+                r'"url"\s*:\s*"https://www.zhihu.com/api/v4/answers/(\d+)"', htm)
             articles = re.findall(
-                r'<link itemprop="url" href="https://zhuanlan.zhihu.com/p/(\d+)">', htm)
+                r'"url"\s*:\s*"https://zhuanlan.zhihu.com/p/(\d+)"', htm)
 
             resource = list()
             for ans in answers:

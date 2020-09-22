@@ -13,7 +13,7 @@ config = {
              'user_answers': 'https://www.zhihu.com/api/v4/members/{item_id}/answers?include=data[*].content,voteup_count,created_time&limit={limit}&offset={offset}&sort_by={sort_by}',
              'user_articles': 'https://www.zhihu.com/api/v4/members/{item_id}/articles?include=data[*].content&offset={offset}&limit={limit}&sort_by={sort_by}',
              'user_meta': 'https://www.zhihu.com/api/v4/members/{item_id}?include=allow_message',
-             'collection': 'https://www.zhihu.com/collection/{item_id}?page={page}',
+             'collection': 'https://www.zhihu.com/api/v4/collections/{item_id}/items?offset={offset}&limit=20',
              'collection_meta': 'https://api.zhihu.com/collections/{item_id}',
              'SORT_BY_VOT': 'voteups',
              'SORT_BY_DEF': 'default',
